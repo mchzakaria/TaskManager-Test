@@ -1,205 +1,156 @@
 # Todo API Project
 
-A full-stack **To-Do application** with a **Laravel RESTful API backend** (`todo-backend`) and a **Vue.js frontend** (`todo-frontend`).  
-The backend provides JWT authentication, email verification, task CRUD operations, and real-time event broadcasting.  
-The frontend, built with **Vue 3, Pinia, Tailwind CSS, and shadcn-vue**, consumes the API and supports **real-time updates** via **Laravel Echo + Pusher**.
+This is a Laravel RESTful API for managing tasks with JWT authentication, user registration, email verification, real-time event broadcasting, validation, and API resources.
 
----
+## Features
 
-## ✨ Features
-
-### 🔹 Backend
-- JWT Authentication (login/register/refresh/logout)
+- User registration and login (JWT)
 - Email auto-verification on registration
 - Task CRUD (Create, Read, Update, Delete)
-- Real-time events (task created, updated, deleted)
-- Consistent JSON responses with API resources
-- Validation & error handling
-
-### 🔹 Frontend
-- Responsive UI with Tailwind CSS & shadcn-vue
-- User auth (register, login, profile, logout)
-- Task management (list, add, edit, delete)
-- Real-time updates with Laravel Echo + Pusher
-- State management with Pinia
-- Built & served using Vite
+- Real-time events for task creation, update, and deletion
+- API resources for consistent JSON responses
+- Validation and error handling
 
 ---
 
-## ⚙️ Step-by-Step Setup Guide
+## Step-by-Step Setup Guide
 
 ### 1. Prerequisites
 
-**Backend**
 - PHP >= 8.0
 - Composer
 - MySQL or SQLite
-
-**Frontend**
-- Node.js >= 18
-- npm or pnpm
-
----
+- Node.js & npm (optional, for frontend assets)
 
 ### 2. Clone the Repository
+
 ```sh
 git clone https://github.com/mchzakaria/TaskManger-Test.git
-cd TaskManger-Test
+cd todo-api
 ```
 
----
-
-### 3. Backend Setup
+### 3. Install Dependencies
 
 ```sh
-cd todo-backend
 composer install
 ```
 
-#### Install JWT
+### 4. Install JWT Package
+
 ```sh
 composer require tymon/jwt-auth
 php artisan vendor:publish --provider="Tymon\JWTAuth\Providers\LaravelServiceProvider"
 php artisan jwt:secret
 ```
 
-#### Configure `.env`
-```env
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=your_db
-DB_USERNAME=your_user
-DB_PASSWORD=your_password
+### 5. Configure Environment
 
-MAIL_MAILER=log
+- Copy `.env.example` to `.env`:
+  ```sh
+  cp .env.example .env
+  ```
+- Edit `.env` and set your database credentials:
+  ```env
+  DB_CONNECTION=mysql
+  DB_HOST=127.0.0.1
+  DB_PORT=3306
+  DB_DATABASE=your_db
+  DB_USERNAME=your_user
+  DB_PASSWORD=your_password
+  ```
+- For local development, set mail driver to log:
+  ```env
+  MAIL_MAILER=log
+  ```
 
-BROADCAST_DRIVER=pusher
-PUSHER_APP_ID=your_app_id
-PUSHER_APP_KEY=your_app_key
-PUSHER_APP_SECRET=your_app_secret
-PUSHER_APP_CLUSTER=mt1
-```
+### 6. Generate Application Key
 
-#### Run setup commands
 ```sh
 php artisan key:generate
+```
+
+### 7. Run Migrations
+
+```sh
 php artisan migrate
-php artisan db:seed   # optional
+```
+
+### 8. (Optional) Seed the Database
+
+```sh
+php artisan db:seed
+```
+
+### 9. (Optional) Build Frontend Assets
+
+```sh
+npm install
+npm run dev
+```
+
+### 10. Start the Server
+
+```sh
 php artisan serve
 ```
 
----
-
-### 4. Frontend Setup
+### 11. (Optional) Clear and Cache Config
 
 ```sh
-cd ../todo-frontend
-pnpm install   # or npm install
+php artisan config:cache
+php artisan cache:clear
 ```
 
-#### Setup shadcn-vue components
-```sh
-npx shadcn-vue@latest add button input select textarea dialog
-```
+## Troubleshooting
 
-#### Configure `.env`
-```env
-VITE_API_URL=http://localhost:8000/api
-VITE_PUSHER_APP_KEY=your_app_key
-VITE_PUSHER_APP_CLUSTER=mt1
-```
-
-#### Start frontend
-```sh
-pnpm dev
-```
-Access → [http://localhost:5173](http://localhost:5173)
+- **Missing PHP extensions:** Install required extensions (pdo, mbstring, openssl, tokenizer, xml, etc.).
+- **JWT errors:** Ensure you installed and configured `tymon/jwt-auth` and ran `php artisan jwt:secret`.
+- **Database errors:** Check your `.env` DB settings and that migrations ran successfully.
+- **Mail errors:** Use `MAIL_MAILER=log` for local dev.
+- **Broadcasting issues:** Configure broadcasting in `.env` and `config/broadcasting.php` if using events frontend.
+- **CORS issues:** Adjust `config/cors.php` if accessing API from a frontend.
+- **Class not found:** Run `composer dump-autoload` after adding new files.
 
 ---
 
-## 🛠 Troubleshooting
+## How to Use
 
-### Backend
-- **Missing PHP extensions** → Install `pdo`, `mbstring`, `openssl`, `xml`, etc.
-- **JWT errors** → Run `php artisan jwt:secret`
-- **DB issues** → Check `.env` and rerun migrations
-- **Broadcast errors** → Verify Pusher credentials
-- **CORS issues** → Update `config/cors.php` to allow `http://localhost:5173`
-
-### Frontend
-- **shadcn-vue errors** → Ensure components are generated
-- **Alias issues** → Check `tsconfig.json` & `vite.config.ts`
-- **Build errors** → Delete `node_modules` + lockfile, reinstall
+1. Register a user via `POST /api/register`.
+2. Login via `POST /api/login` to get a JWT token.
+3. Use the token in the `Authorization: Bearer <token>` header for all protected endpoints.
+4. Manage tasks via the endpoints below.
 
 ---
 
-## 🚀 Usage
-
-### Backend
-- Register → `POST /api/register`
-- Login → `POST /api/login` → get JWT
-- Use `Authorization: Bearer <token>` header for protected routes
-- Manage tasks with CRUD endpoints
-
-### Frontend
-- Visit [http://localhost:5173](http://localhost:5173)
-- Register/login
-- Add, edit, delete tasks with real-time sync
-- Logout when done
-
----
-
-## 📡 API Endpoints
+## API Endpoints
 
 ### Auth
-- `POST /api/register` — Register new user
-- `POST /api/login` — Login & get JWT
-- `POST /api/logout` — Logout
-- `POST /api/refresh` — Refresh JWT
-- `GET /api/me` — Get logged-in user
+
+- `POST /api/register` — Register a new user
+- `POST /api/login` — Login and receive JWT token
+- `POST /api/logout` — Logout (invalidate token)
+- `POST /api/refresh` — Refresh JWT token
+- `GET /api/me` — Get current user info
 
 ### Tasks
-- `GET /api/tasks` — List all tasks
-- `POST /api/tasks` — Create task
-- `GET /api/tasks/{id}` — Get single task
-- `PUT /api/tasks/{id}` — Update task
-- `DELETE /api/tasks/{id}` — Delete task
+
+- `GET /api/tasks` — List all tasks for authenticated user
+- `POST /api/tasks` — Create a new task
+- `GET /api/tasks/{id}` — Get a specific task
+- `PUT /api/tasks/{id}` — Update a task
+- `DELETE /api/tasks/{id}` — Delete a task
 
 ### Email Verification
-- `GET /api/email/verify/{id}/{hash}` — Verify email
-- `POST /api/email/resend` — Resend verification
+
+- `GET /api/email/verify/{id}/{hash}` — Verify email (auto-verified on registration)
+- `POST /api/email/resend` — Resend verification email
 
 ### Events
-- `TaskCreated`, `TaskUpdated`, `TaskDeleted` broadcasted via Pusher
 
----
+- TaskCreated, TaskUpdated, TaskDeleted events are broadcasted in real-time (see Laravel Echo & Pusher setup for frontend)
 
-## 📂 Project Structure
+### Validation & Error Handling
 
-```
-todo-backend/     # Laravel API backend
- ├─ app/
- ├─ config/
- ├─ database/
- └─ routes/
-
-todo-frontend/    # Vue.js frontend
- ├─ src/
- ├─ public/
- └─ vite.config.ts
-```
-
----
-
-## 🤝 Contributing
-1. Fork repo  
-2. Create branch → `git checkout -b feature-name`  
-3. Commit changes → `git commit -m "Add feature"`  
-4. Push branch → `git push origin feature-name`  
-5. Open PR 🚀
-
----
-
-## 📜 License
-MIT License
+- All endpoints return JSON responses.
+- Validation errors return status 422 with error details.
+- Unauthenticated requests return status 401.
