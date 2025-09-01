@@ -32,7 +32,7 @@ The frontend is built with **Vue 3, Pinia, Tailwind CSS, and shadcn-vue componen
 
 ---
 
-<<<<<<< HEAD
+
 ## ✨ Features
 
 ### 🔹 Backend
@@ -61,7 +61,7 @@ The frontend is built with **Vue 3, Pinia, Tailwind CSS, and shadcn-vue componen
 ## ⚙️ Step-by-Step Setup Guide
 
 ### 1. Prerequisites
->>>>>>> 726826384ca60258695aaac885a2937de408d4fd
+
 **Backend**
 - PHP >= 8.0
 - Composer
@@ -70,10 +70,10 @@ The frontend is built with **Vue 3, Pinia, Tailwind CSS, and shadcn-vue componen
 **Frontend**
 - Node.js >= 18
 - npm or pnpm
-<<<<<<< HEAD
+
 =======
 - A code editor (e.g., VS Code)
->>>>>>> 726826384ca60258695aaac885a2937de408d4fd
+
 
 ---
 
@@ -247,13 +247,13 @@ sh
 Copier le code
 pnpm dev
 Visit → http://localhost:5173
->>>>>>> 726826384ca60258695aaac885a2937de408d4fd
+
 
 🛠 Troubleshooting
 Backend
 Missing PHP extensions → Install pdo, mbstring, openssl, tokenizer, xml, etc.
 
-<<<<<<< HEAD
+
 ## 🛠 Troubleshooting
 
 ### Backend
@@ -271,11 +271,11 @@ Missing PHP extensions → Install pdo, mbstring, openssl, tokenizer, xml, etc.
 JWT errors → Run php artisan jwt:secret
 
 Database errors → Check .env DB settings & migrations
->>>>>>> 726826384ca60258695aaac885a2937de408d4fd
+
 
 Mail issues → Use MAIL_MAILER=log locally
 
-<<<<<<< HEAD
+
 ## 🚀 Usage
 
 ### Backend
