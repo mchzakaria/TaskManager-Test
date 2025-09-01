@@ -1,94 +1,75 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
-import type { User } from '~/types'
+import router from '@/router'
+
+const apiUrl = import.meta.env.VITE_API_URL
+
+axios.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token')
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+  return config
+})
+
+axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response.status === 401) {
+      localStorage.removeItem('token')
+      router.push('/login')
+    }
+    return Promise.reject(error)
+  }
+)
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    token: localStorage.getItem('token') || '',
-    user: null as User | null
+    user: null,
+    token: localStorage.getItem('token') || null,
   }),
+  getters: {
+    isAuthenticated: (state) => !!state.token,
+  },
   actions: {
-    async register(credentials: { name: string; email: string; password: string; password_confirmation: string }) {
+    async register(userData) {
       try {
-        const response = await axios.post('/auth/register', credentials)
+        const response = await axios.post(`${apiUrl}/register`, userData)
         this.token = response.data.token
-        this.user = response.data.user
         localStorage.setItem('token', this.token)
-        axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`
-      } catch (error: any) {
-        console.error('Registration failed', error)
-        throw error.response?.data?.message || 'Registration failed'
+        await this.fetchUser()
+        router.push('/')
+      } catch (error) {
+        throw error.response.data
       }
     },
-    async login(credentials: { email: string; password: string }) {
+    async login(credentials) {
       try {
-        const response = await axios({
-          method: 'post',
-          url: '/auth/login',
-          data: credentials,
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          validateStatus: (status) => {
-            return status >= 200 && status < 400
-          }
-        })
-
-        if (!response.data.token) {
-          throw new Error('No token received from server')
-        }
-
+        const response = await axios.post(`${apiUrl}/login`, credentials)
         this.token = response.data.token
-        this.user = response.data.user
         localStorage.setItem('token', this.token)
-
-        // Update axios default headers for subsequent requests
-        axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`
-        return response.data
-      } catch (error: any) {
-        console.error('Login failed:', {
-          status: error.response?.status,
-          data: error.response?.data,
-          message: error.message
-        })
-        throw error.response?.data?.message || 'Login failed'
+        await this.fetchUser()
+        router.push('/')
+      } catch (error) {
+        throw error.response.data
+      }
+    },
+    async fetchUser() {
+      try {
+        const response = await axios.get(`${apiUrl}/me`)
+        this.user = response.data
+      } catch (error) {
+        this.logout()
       }
     },
     async logout() {
       try {
-        await axios.post(`${import.meta.env.VITE_API_URL}/logout`)
-        this.token = ''
-        this.user = null
-        localStorage.removeItem('token')
-        delete axios.defaults.headers.Authorization
-      } catch (error) {
-        console.error('Logout failed', error)
-        throw error || 'Logout failed'
-      }
+        await axios.post(`${apiUrl}/logout`)
+      } catch {}
+      this.user = null
+      this.token = null
+      localStorage.removeItem('token')
+      router.push('/login')
     },
-    async refreshToken() {
-      try {
-        const response = await axios.post(`${import.meta.env.VITE_API_URL}/refresh`)
-        this.token = response.data.token
-        localStorage.setItem('token', this.token)
-        axios.defaults.headers.Authorization = `Bearer ${this.token}`
-      } catch (error) {
-        console.error('Token refresh failed', error)
-        throw error || 'Token refresh failed'
-      }
-    },
-    async fetchProfile() {
-      try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/me`)
-        this.user = response.data
-      } catch (error) {
-        console.error('Fetch profile failed', error)
-        throw error || 'Fetch profile failed'
-      }
-    }
   },
-  getters: {
-    isAuthenticated: (state) => !!state.token
-  }
 })

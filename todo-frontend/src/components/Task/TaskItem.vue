@@ -3,8 +3,9 @@ import { ref } from 'vue'
 import { useTasksStore } from '~/stores/tasks'
 import { Button } from '~/components/ui'
 import { useToast } from 'vue-toastification'
+import type { Task } from '~/types'
 
-defineProps<{ task: { id: number; title: string; description?: string; completed: boolean } }>()
+const props = defineProps<{ task: Task }>()
 const tasksStore = useTasksStore()
 const toast = useToast()
 const editing = ref(false)
@@ -17,6 +18,16 @@ const save = async () => {
     toast.success('Task updated')
   } catch (err) {
     toast.error('Failed to update task')
+  }
+}
+
+const toggleStatus = async () => {
+  try {
+    const newStatus = props.task.status === 'completed' ? 'pending' : 'completed'
+    await tasksStore.updateTask(props.task.id, { status: newStatus })
+    toast.success('Task status updated')
+  } catch (err) {
+    toast.error('Failed to update task status')
   }
 }
 
@@ -33,22 +44,71 @@ const remove = async () => {
 </script>
 
 <template>
-  <div class="p-2 border rounded flex items-center justify-between">
-    <div v-if="!editing" class="flex-1">
-      <h4 class="font-medium">{{ task.title }}</h4>
-      <p class="text-sm text-gray-600">{{ task.description || 'No description' }}</p>
-      <input type="checkbox" v-model="task.completed" class="mr-2" @change="save">
-      <span>Completed</span>
+  <div class="p-4 border rounded-lg shadow-sm bg-white">
+    <div v-if="!editing" class="flex items-start justify-between">
+      <div class="flex-1">
+        <div class="flex items-center gap-2 mb-2">
+          <input 
+            type="checkbox" 
+            :checked="task.status === 'completed'"
+            @change="toggleStatus"
+            class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+          />
+          <h4 class="font-medium text-gray-900" :class="{ 'line-through text-gray-500': task.status === 'completed' }">
+            {{ task.title }}
+          </h4>
+        </div>
+        <p class="text-sm text-gray-600 mb-2">{{ task.description || 'No description' }}</p>
+        <div class="flex items-center gap-4 text-xs text-gray-500">
+          <span class="px-2 py-1 rounded-full" :class="{
+            'bg-red-100 text-red-800': task.priority === 'high',
+            'bg-yellow-100 text-yellow-800': task.priority === 'medium',
+            'bg-green-100 text-green-800': task.priority === 'low'
+          }">
+            {{ task.priority }}
+          </span>
+          <span v-if="task.due_date" class="text-gray-500">
+            Due: {{ new Date(task.due_date).toLocaleDateString() }}
+          </span>
+        </div>
+      </div>
+      <div class="flex gap-2 ml-4">
+        <Button @click="editing = true" size="sm" variant="outline">Edit</Button>
+        <Button @click="remove" variant="destructive" size="sm">Delete</Button>
+      </div>
     </div>
-    <div v-else class="flex-1">
-      <input v-model="editedTask.title" class="border p-1 mb-1 w-full" />
-      <input v-model="editedTask.description" class="border p-1 mb-1 w-full" />
-      <input v-model="editedTask.completed" type="checkbox" class="mr-2">
-    </div>
-    <div class="space-x-2">
-      <Button v-if="!editing" @click="editing = true" size="sm">Edit</Button>
-      <Button v-else @click="save" size="sm">Save</Button>
-      <Button @click="remove" variant="destructive" size="sm">Delete</Button>
+    
+    <div v-else class="space-y-3">
+      <input 
+        v-model="editedTask.title" 
+        class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        placeholder="Task title"
+      />
+      <textarea 
+        v-model="editedTask.description" 
+        class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        placeholder="Task description"
+        rows="3"
+      />
+      <div class="flex gap-2">
+        <select 
+          v-model="editedTask.priority"
+          class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select>
+        <input 
+          v-model="editedTask.due_date" 
+          type="date"
+          class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+      <div class="flex gap-2">
+        <Button @click="save" size="sm">Save</Button>
+        <Button @click="editing = false" size="sm" variant="outline">Cancel</Button>
+      </div>
     </div>
   </div>
 </template>

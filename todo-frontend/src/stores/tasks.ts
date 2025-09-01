@@ -1,54 +1,71 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
-import type { Task } from '~/types'
+import { useAuthStore } from './auth'
+
+const apiUrl = import.meta.env.VITE_API_URL
 
 export const useTasksStore = defineStore('tasks', {
   state: () => ({
-    tasks: [] as Task[],
+    tasks: [],
     loading: false,
-    error: null as string | null
+    error: null,
   }),
   actions: {
     async fetchTasks() {
+      this.loading = true
       try {
-        const response = await axios.get('/tasks')
-        this.tasks = response.data.data
-      } catch (error: any) {
-        console.error('Fetch tasks failed', error)
-        throw error.response?.data?.message || 'Fetch tasks failed'
+        const response = await axios.get(`${apiUrl}/tasks`)
+        this.tasks = response.data.data // Assuming API resource wraps in 'data'
+      } catch (err) {
+        this.error = err.response?.data?.message || 'Failed to fetch tasks'
+      } finally {
+        this.loading = false
       }
     },
-    async addTask(task: Partial<Task>) {
+    async addTask(taskData) {
       try {
-        const response = await axios.post('/tasks', task)
+        const response = await axios.post(`${apiUrl}/tasks`, taskData)
         this.tasks.push(response.data.data)
-        return response.data.data
-      } catch (error: any) {
-        console.error('Add task failed', error)
-        throw error.response?.data?.message || 'Add task failed'
+      } catch (err) {
+        throw err.response?.data || 'Failed to add task'
       }
     },
-    async updateTask(id: number, task: Partial<Task>) {
+    async updateTask(id, taskData) {
       try {
-        const response = await axios.put(`/tasks/${id}`, task)
-        const index = this.tasks.findIndex(t => t.id === id)
-        if (index !== -1) {
-          this.tasks[index] = { ...this.tasks[index], ...response.data.data }
-        }
-        return response.data.data
-      } catch (error: any) {
-        console.error('Update task failed', error)
-        throw error.response?.data?.message || 'Update task failed'
+        const response = await axios.put(`${apiUrl}/tasks/${id}`, taskData)
+        const index = this.tasks.findIndex((t) => t.id === id)
+        if (index !== -1) this.tasks[index] = response.data.data
+      } catch (err) {
+        throw err.response?.data || 'Failed to update task'
       }
     },
-    async deleteTask(id: number) {
+    async deleteTask(id) {
       try {
-        await axios.delete(`${import.meta.env.VITE_API_URL}/tasks/${id}`)
-        this.tasks = this.tasks.filter(t => t.id !== id)
-      } catch (error) {
-        console.error('Delete task failed', error)
-        throw error || 'Delete task failed'
+        await axios.delete(`${apiUrl}/tasks/${id}`)
+        this.tasks = this.tasks.filter((t) => t.id !== id)
+      } catch (err) {
+        throw err.response?.data || 'Failed to delete task'
       }
-    }
-  }
+    },
+    subscribeToRealTimeUpdates() {
+      const authStore = useAuthStore()
+      if (!authStore.isAuthenticated) return
+
+      // Assume public channel 'tasks'; adjust if private (e.g., `private-tasks.${authStore.user.id}`)
+      window.Echo.channel('tasks')
+        .listen('TaskCreated', (e) => {
+          this.tasks.push(e.task)
+        })
+        .listen('TaskUpdated', (e) => {
+          const index = this.tasks.findIndex((t) => t.id === e.task.id)
+          if (index !== -1) this.tasks[index] = e.task
+        })
+        .listen('TaskDeleted', (e) => {
+          this.tasks = this.tasks.filter((t) => t.id !== e.task.id)
+        })
+    },
+    unsubscribeFromRealTimeUpdates() {
+      window.Echo.leave('tasks')
+    },
+  },
 })
