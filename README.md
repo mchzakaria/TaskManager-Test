@@ -1,6 +1,5 @@
 # Todo API Project
 
-<<<<<<< HEAD
 A full-stack **To-Do application** with a **Laravel RESTful API backend** (`todo-backend`) and a **Vue.js frontend** (`todo-frontend`).  
 The backend provides JWT authentication, email verification, task CRUD operations, and real-time event broadcasting.  
 The frontend, built with **Vue 3, Pinia, Tailwind CSS, and shadcn-vue**, consumes the API and supports **real-time updates** via **Laravel Echo + Pusher**.
