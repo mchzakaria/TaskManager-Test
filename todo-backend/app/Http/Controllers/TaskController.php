@@ -9,20 +9,24 @@ use Illuminate\Support\Facades\Auth;
 use App\Events\TaskCreated;
 use App\Events\TaskUpdated;
 use App\Events\TaskDeleted;
+use App\Services\NotificationService;
 
 class TaskController extends Controller
 {
     protected $taskService;
+    protected $notificationService;
 
-    public function __construct(TaskService $taskService)
+    public function __construct(TaskService $taskService, NotificationService $notificationService)
     {
         $this->middleware('auth:api');
         $this->taskService = $taskService;
+        $this->notificationService = $notificationService;
     }
 
     public function index(Request $request)
     {
         $filters = $request->only(['status', 'priority', 'search']);
+        $filters['user_id'] = Auth::id(); // Add user_id to filters
         $tasks = $this->taskService->listTasks($filters);
         return response()->json($tasks);
     }
@@ -37,15 +41,29 @@ class TaskController extends Controller
             'status' => 'in:pending,completed',
         ]);
         $data['user_id'] = Auth::id();
-    $task = $this->taskService->createTask($data);
-    event(new TaskCreated($task));
-    return response()->json($task, 201);
+        
+        $task = $this->taskService->createTask($data);
+        event(new TaskCreated($task));
+        
+        // Create notification for task creation
+        $this->notificationService->createNotification(
+            Auth::id(),
+            'task_created',
+            "Task '{$task->title}' has been created successfully!",
+            [
+                'task_id' => $task->id,
+                'task_title' => $task->title,
+                'task_priority' => $task->priority,
+            ]
+        );
+        
+        return response()->json($task, 201);
     }
 
     public function show($id)
     {
         $task = $this->taskService->getTask($id);
-        if (!$task) {
+        if (!$task || $task->user_id !== Auth::id()) {
             return response()->json(['error' => 'Task not found'], 404);
         }
         return response()->json($task);
@@ -54,7 +72,7 @@ class TaskController extends Controller
     public function update(Request $request, $id)
     {
         $task = $this->taskService->getTask($id);
-        if (!$task) {
+        if (!$task || $task->user_id !== Auth::id()) {
             return response()->json(['error' => 'Task not found'], 404);
         }
         $data = $request->validate([
@@ -72,7 +90,7 @@ class TaskController extends Controller
     public function destroy($id)
     {
         $task = $this->taskService->getTask($id);
-        if (!$task) {
+        if (!$task || $task->user_id !== Auth::id()) {
             return response()->json(['error' => 'Task not found'], 404);
         }
     $this->taskService->deleteTask($task);

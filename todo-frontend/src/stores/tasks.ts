@@ -6,6 +6,9 @@ export interface Task {
 id: number
 title: string
 description: string
+priority?: string
+due_date?: string
+status: string
 completed: boolean
 }
 
@@ -22,8 +25,14 @@ const { data } = await api.get('/tasks')
 this.tasks = data
 this.loading = false
 },
-async addTask(title: string, description: string) {
-const { data } = await api.post('/tasks', { title, description })
+async addTask(taskData: {
+title: string
+description: string
+priority?: string
+due_date?: string
+status: string
+}) {
+const { data } = await api.post('/tasks', taskData)
 this.tasks.push(data)
 },
 async updateTask(task: Task) {

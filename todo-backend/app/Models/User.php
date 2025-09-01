@@ -31,6 +31,9 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
     protected $fillable = [
         'name',
         'email',
+        'phone_number',
+        'address',
+        'image',
         'password',
     ];
 
@@ -52,8 +55,19 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    /**
+     * Get the tasks for the user.
+     */
     public function tasks()
     {
         return $this->hasMany(Task::class);
+    }
+
+    /**
+     * Get the notifications for the user.
+     */
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
     }
 }

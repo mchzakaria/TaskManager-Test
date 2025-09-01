@@ -10,6 +10,12 @@ class TaskRepository implements TaskRepositoryInterface
     public function all(array $filters = []): Collection
     {
         $query = Task::query();
+        
+        // Always filter by user_id to ensure users only see their own tasks
+        if (isset($filters['user_id'])) {
+            $query->where('user_id', $filters['user_id']);
+        }
+        
         if (isset($filters['status'])) {
             $query->where('status', $filters['status']);
         }

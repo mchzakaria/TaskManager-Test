@@ -1,425 +1,447 @@
-# Todo API Project
+# 🚀 Task Manager - Full Stack Application
 
-A full-stack **To-Do application** with a **Laravel RESTful API backend** (`todo-backend`) and a **Vue.js frontend** (`todo-frontend`).  
-The backend provides JWT authentication, email verification, task CRUD operations, and real-time event broadcasting.  
-The frontend, built with **Vue 3, Pinia, Tailwind CSS, and shadcn-vue**, consumes the API and supports **real-time updates** via **Laravel Echo + Pusher**.
-=======
-A full-stack **To-Do application** featuring a **Laravel RESTful API backend** (`todo-backend`) and a **Vue.js frontend** (`todo-frontend`).  
-The backend provides JWT authentication, email verification, task CRUD operations, and real-time event broadcasting.  
-The frontend is built with **Vue 3, Pinia, Tailwind CSS, and shadcn-vue components**, supporting real-time updates via **Laravel Echo** and **Pusher**.
-
----
+A modern, real-time task management application built with **Laravel** (backend) and **Vue.js** (frontend), featuring real-time notifications, user authentication, and a beautiful UI.
 
 ## ✨ Features
 
-### 🔹 Backend
-- User registration and login with **JWT authentication**
-- Email auto-verification on registration
-- Task CRUD (Create, Read, Update, Delete)
-- Real-time events for task creation, update, and deletion
-- API resources for consistent JSON responses
-- Validation and error handling
->>>>>>> 726826384ca60258695aaac885a2937de408d4fd
+### 🔐 Authentication & User Management
+- **JWT Token Authentication** - Secure token-based authentication
+- **User Registration** - Complete registration with all required fields
+  - Full Name, Email, Phone Number, Address
+  - Profile Image Upload
+  - Password with confirmation
+- **User Profile Management** - Edit profile information and change password
+- **User Data Isolation** - Complete separation of user data
 
-### 🔹 Frontend
-- Responsive UI with **Tailwind CSS** and **shadcn-vue** components
-- Authentication (login, register, profile, logout)
-- Task management (add, edit, delete, list)
-- Real-time task updates using **Laravel Echo + Pusher**
-- State management with **Pinia**
-- **Vite** for development and building
+### 📋 Task Management
+- **Full CRUD Operations** - Create, Read, Update, Delete tasks
+- **Rich Task Properties**:
+  - Title (required)
+  - Description (optional)
+  - Priority (Low/Medium/High)
+  - Due Date (optional)
+  - Status (Pending/Completed)
+- **Task Editing** - Inline editing with form switching
+- **User-Specific Tasks** - Users only see their own tasks
 
----
+### 🔔 Real-time Notifications
+- **Automatic Notifications** - Created when tasks are added
+- **Real-time Delivery** - Using Laravel Echo and Pusher
+- **Toast Notifications** - Immediate feedback for users
+- **Notification Badge** - Unread count indicator
+- **Dedicated Notifications Page** - Full notification management
+- **Read/Unread Status** - Track notification states
 
+### 🎨 Modern UI/UX
+- **Responsive Design** - Works on all device sizes
+- **Tailwind CSS** - Modern styling framework
+- **Navigation Component** - Consistent navigation across pages
+- **Loading States** - Proper loading indicators
+- **Error Handling** - Comprehensive error management
+- **Smooth Animations** - Professional transitions
 
-## ✨ Features
+### 🏗️ Architecture & Best Practices
+- **Service Layer** - Business logic separation
+- **Repository Pattern** - Data access abstraction
+- **SOLID Principles** - Clean, maintainable code
+- **Event-Driven Architecture** - Broadcasting system
+- **TypeScript Support** - Type-safe development
 
-### 🔹 Backend
-- JWT Authentication (login/register/refresh/logout)
-- Email auto-verification on registration
-- Task CRUD (Create, Read, Update, Delete)
-- Real-time events (task created, updated, deleted)
-- Consistent JSON responses with API resources
-- Validation & error handling
+## 🛠️ Technology Stack
 
-### 🔹 Frontend
-- Responsive UI with Tailwind CSS & shadcn-vue
-- User auth (register, login, profile, logout)
-- Task management (list, add, edit, delete)
-- Real-time updates with Laravel Echo + Pusher
-- State management with Pinia
-- Built & served using Vite
+### Backend (Laravel)
+- **Framework**: Laravel 10
+- **Database**: MySQL/PostgreSQL
+- **Authentication**: JWT (tymon/jwt-auth)
+- **Real-time**: Laravel Echo + Pusher
+- **File Upload**: Laravel Storage
+- **Validation**: Form Request Classes
+- **Testing**: PHPUnit
 
----
+### Frontend (Vue.js)
+- **Framework**: Vue.js 3 with Composition API
+- **Language**: TypeScript
+- **Build Tool**: Vite
+- **Styling**: Tailwind CSS
+- **State Management**: Pinia
+- **Routing**: Vue Router
+- **HTTP Client**: Axios
+- **Real-time**: Laravel Echo + Pusher-js
 
-## ⚙️ Step-by-Step Setup Guide
+## 📋 Prerequisites
 
-### 1. Prerequisites
+Before you begin, ensure you have the following installed:
+- **PHP 8.1+**
+- **Node.js 16+**
+- **Composer**
+- **MySQL/PostgreSQL**
+- **Git**
 
-=======
-## ⚙️ Step-by-Step Setup Guide
+## 🚀 Quick Start
 
-### 1. Prerequisites
-
-**Backend**
-- PHP >= 8.0
-- Composer
-- MySQL or SQLite
-
-**Frontend**
-- Node.js >= 18
-- npm or pnpm
-
-=======
-- A code editor (e.g., VS Code)
-
-
----
-
-### 2. Clone the Repository
-<<<<<<< HEAD
-```sh
-git clone https://github.com/mchzakaria/TaskManger-Test.git
-cd TaskManger-Test
+### 1. Clone the Repository
+```bash
+git clone <repository-url>
+cd TaskManager-Test
 ```
 
----
+### 2. Backend Setup (Laravel)
 
-### 3. Backend Setup
-
-```sh
+#### Navigate to Backend Directory
+```bash
 cd todo-backend
+```
+
+#### Install Dependencies
+```bash
 composer install
 ```
 
-#### Install JWT
-```sh
-=======
-```sh
-git clone https://github.com/mchzakaria/TaskManger-Test.git
-cd TaskManger-Test
-3. Backend Setup
-a. Navigate to Backend Directory
-sh
-Copier le code
-cd todo-backend
-b. Install Dependencies
-sh
-Copier le code
-composer install
-c. Install JWT Package
-sh
-Copier le code
->>>>>>> 726826384ca60258695aaac885a2937de408d4fd
-composer require tymon/jwt-auth
-php artisan vendor:publish --provider="Tymon\JWTAuth\Providers\LaravelServiceProvider"
-php artisan jwt:secret
-d. Configure Environment
-Copy .env.example → .env:
-
-<<<<<<< HEAD
-#### Configure `.env`
-```env
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=your_db
-DB_USERNAME=your_user
-DB_PASSWORD=your_password
-
-MAIL_MAILER=log
-
-BROADCAST_DRIVER=pusher
-PUSHER_APP_ID=your_app_id
-PUSHER_APP_KEY=your_app_key
-PUSHER_APP_SECRET=your_app_secret
-PUSHER_APP_CLUSTER=mt1
-```
-
-#### Run setup commands
-```sh
-php artisan key:generate
-php artisan migrate
-php artisan db:seed   # optional
-php artisan serve
-```
-
----
-
-### 4. Frontend Setup
-
-```sh
-cd ../todo-frontend
-pnpm install   # or npm install
-```
-
-#### Setup shadcn-vue components
-```sh
-npx shadcn-vue@latest add button input select textarea dialog
-```
-
-#### Configure `.env`
-```env
-VITE_API_URL=http://localhost:8000/api
-VITE_PUSHER_APP_KEY=your_app_key
-VITE_PUSHER_APP_CLUSTER=mt1
-```
-
-#### Start frontend
-```sh
-pnpm dev
-```
-Access → [http://localhost:5173](http://localhost:5173)
-=======
-sh
-Copier le code
+#### Environment Configuration
+```bash
 cp .env.example .env
-Update .env:
+php artisan key:generate
+```
 
-env
-Copier le code
+#### Database Configuration
+Edit `.env` file and update database settings:
+```env
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=your_db
-DB_USERNAME=your_user
+DB_DATABASE=task_manager
+DB_USERNAME=your_username
 DB_PASSWORD=your_password
+```
 
-MAIL_MAILER=log
-
+#### Pusher Configuration (for Real-time Notifications)
+1. Create a free account at [Pusher](https://pusher.com/)
+2. Create a new app
+3. Add Pusher credentials to `.env`:
+```env
 BROADCAST_DRIVER=pusher
 PUSHER_APP_ID=your_app_id
 PUSHER_APP_KEY=your_app_key
 PUSHER_APP_SECRET=your_app_secret
 PUSHER_APP_CLUSTER=mt1
-e. Generate Application Key
-sh
-Copier le code
-php artisan key:generate
-f. Run Migrations
-sh
-Copier le code
+```
+
+#### Run Migrations
+```bash
 php artisan migrate
-g. (Optional) Seed the Database
-sh
-Copier le code
-php artisan db:seed
-h. Start the Backend Server
-sh
-Copier le code
+```
+
+#### Create Storage Link
+```bash
+php artisan storage:link
+```
+
+#### Start Laravel Server
+```bash
 php artisan serve
-i. (Optional) Cache Config
-sh
-Copier le code
-php artisan config:cache
-php artisan cache:clear
-4. Frontend Setup
-a. Navigate to Frontend Directory
-sh
-Copier le code
+```
+
+The backend will be available at `http://localhost:8000`
+
+### 3. Frontend Setup (Vue.js)
+
+#### Navigate to Frontend Directory
+```bash
 cd ../todo-frontend
-b. Install Dependencies
-sh
-Copier le code
-pnpm install
-# or
+```
+
+#### Install Dependencies
+```bash
 npm install
-c. Configure shadcn-vue Components
-sh
-Copier le code
-npx shadcn-vue@latest add button input select textarea dialog
-d. Configure Environment
-Copy .env.example → .env:
+```
 
-sh
-Copier le code
-cp .env.example .env
-Update .env:
+#### Environment Configuration
+Create `.env` file in the frontend directory:
+```env
+# API Configuration
+VITE_API_URL=http://localhost:8000
 
-env
-Copier le code
-VITE_API_URL=http://localhost:8000/api
-VITE_PUSHER_APP_KEY=your_app_key
+# Pusher Configuration (use same credentials as backend)
+VITE_PUSHER_APP_KEY=your_pusher_app_key
 VITE_PUSHER_APP_CLUSTER=mt1
-e. Start Development Server
-sh
-Copier le code
-pnpm dev
-Visit → http://localhost:5173
+```
 
+#### Start Development Server
+```bash
+npm run dev
+```
 
-🛠 Troubleshooting
-Backend
-Missing PHP extensions → Install pdo, mbstring, openssl, tokenizer, xml, etc.
+The frontend will be available at `http://localhost:5173`
 
+## 🧪 Testing the Application
 
-## 🛠 Troubleshooting
+### 1. Register a New User
+1. Go to `http://localhost:5173/register`
+2. Fill in all required fields:
+   - Full Name
+   - Email
+   - Phone Number (optional)
+   - Address (optional)
+   - Profile Image (optional)
+   - Password
+   - Confirm Password
 
-### Backend
-- **Missing PHP extensions** → Install `pdo`, `mbstring`, `openssl`, `xml`, etc.
-- **JWT errors** → Run `php artisan jwt:secret`
-- **DB issues** → Check `.env` and rerun migrations
-- **Broadcast errors** → Verify Pusher credentials
-- **CORS issues** → Update `config/cors.php` to allow `http://localhost:5173`
+### 2. Login
+1. Go to `http://localhost:5173/login`
+2. Enter your email and password
 
-### Frontend
-- **shadcn-vue errors** → Ensure components are generated
-- **Alias issues** → Check `tsconfig.json` & `vite.config.ts`
-- **Build errors** → Delete `node_modules` + lockfile, reinstall
-=======
-JWT errors → Run php artisan jwt:secret
+### 3. Create Tasks
+1. On the main page, you'll see the task creation form
+2. Fill in task details:
+   - Title (required)
+   - Description (optional)
+   - Priority (Low/Medium/High)
+   - Due Date (optional)
+   - Status (Pending/Completed)
+3. Click "Add Task"
 
-Database errors → Check .env DB settings & migrations
+### 4. Test Real-time Notifications
+1. Create a new task
+2. You should see a toast notification appear
+3. Check the Notifications page to see the notification
+4. The notification badge should show the unread count
 
+### 5. Test Task Management
+- Edit tasks by clicking the "Edit" button
+- Mark tasks as complete/incomplete
+- Delete tasks
+- Filter and search tasks
 
-Mail issues → Use MAIL_MAILER=log locally
+### 6. Test Profile Management
+- Go to the Profile page
+- Update your profile information
+- Change your profile picture
+- Change your password
 
+## 📊 API Endpoints
 
-## 🚀 Usage
-
-### Backend
-- Register → `POST /api/register`
-- Login → `POST /api/login` → get JWT
-- Use `Authorization: Bearer <token>` header for protected routes
-- Manage tasks with CRUD endpoints
-
-### Frontend
-- Visit [http://localhost:5173](http://localhost:5173)
-- Register/login
-- Add, edit, delete tasks with real-time sync
-- Logout when done
-
----
-
-## 📡 API Endpoints
-
-### Auth
-- `POST /api/register` — Register new user
-- `POST /api/login` — Login & get JWT
-- `POST /api/logout` — Logout
-- `POST /api/refresh` — Refresh JWT
-- `GET /api/me` — Get logged-in user
+### Authentication
+- `POST /api/auth/register` - User registration
+- `POST /api/auth/login` - User login
+- `POST /api/auth/logout` - User logout
+- `GET /api/auth/me` - Get current user
+- `PUT /api/auth/profile` - Update user profile
+- `PUT /api/auth/password` - Change password
 
 ### Tasks
-- `GET /api/tasks` — List all tasks
-- `POST /api/tasks` — Create task
-- `GET /api/tasks/{id}` — Get single task
-- `PUT /api/tasks/{id}` — Update task
-- `DELETE /api/tasks/{id}` — Delete task
+- `GET /api/tasks` - Get user's tasks (with filters)
+- `POST /api/tasks` - Create new task
+- `GET /api/tasks/{id}` - Get specific task
+- `PUT /api/tasks/{id}` - Update task
+- `DELETE /api/tasks/{id}` - Delete task
 
-### Email Verification
-- `GET /api/email/verify/{id}/{hash}` — Verify email
-- `POST /api/email/resend` — Resend verification
+### Notifications
+- `GET /api/notifications` - Get user's notifications
+- `GET /api/notifications/unread` - Get unread notifications
+- `PUT /api/notifications/{id}/read` - Mark notification as read
+- `PUT /api/notifications/read-all` - Mark all as read
 
-### Events
-- `TaskCreated`, `TaskUpdated`, `TaskDeleted` broadcasted via Pusher
+## 🗄️ Database Schema
 
----
-
-## 📂 Project Structure
-
-```
-todo-backend/     # Laravel API backend
- ├─ app/
- ├─ config/
- ├─ database/
- └─ routes/
-
-todo-frontend/    # Vue.js frontend
- ├─ src/
- ├─ public/
- └─ vite.config.ts
+### Users Table
+```sql
+- id (Primary Key)
+- name (VARCHAR)
+- email (VARCHAR, Unique)
+- phone_number (VARCHAR, Nullable)
+- address (TEXT, Nullable)
+- image (VARCHAR, Nullable)
+- password (VARCHAR)
+- email_verified_at (TIMESTAMP, Nullable)
+- created_at, updated_at (TIMESTAMPS)
 ```
 
----
+### Tasks Table
+```sql
+- id (Primary Key)
+- user_id (Foreign Key)
+- title (VARCHAR)
+- description (TEXT, Nullable)
+- priority (ENUM: low, medium, high)
+- due_date (DATE, Nullable)
+- status (ENUM: pending, completed)
+- created_at, updated_at (TIMESTAMPS)
+```
+
+### Notifications Table
+```sql
+- id (Primary Key)
+- user_id (Foreign Key)
+- type (VARCHAR)
+- message (TEXT)
+- data (JSON, Nullable)
+- read (BOOLEAN)
+- created_at, updated_at (TIMESTAMPS)
+```
+
+## 🔒 Security Features
+
+### Authentication & Authorization
+- JWT token-based authentication
+- User-specific data isolation
+- Protected API routes
+- Secure password hashing
+- Token refresh mechanism
+
+### Data Protection
+- Input validation and sanitization
+- SQL injection prevention
+- XSS protection
+- File upload security
+- CORS configuration
+
+### Real-time Security
+- Private channels for notifications
+- User-specific broadcasting
+- Channel authorization
+- Secure WebSocket connections
+
+## 🚀 Production Deployment
+
+### Backend Deployment
+1. Set `APP_ENV=production` in `.env`
+2. Configure production database
+3. Set up Pusher credentials
+4. Run migrations
+5. Configure web server (Apache/Nginx)
+
+### Frontend Deployment
+1. Run `npm run build`
+2. Deploy `dist/` folder to web server
+3. Configure environment variables
+4. Set up proper CORS headers
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+#### Backend Issues
+1. **Database Connection Error**
+   - Check database credentials in `.env`
+   - Ensure database exists
+   - Run `php artisan migrate`
+
+2. **Pusher Configuration Error**
+   - Verify Pusher credentials in `.env`
+   - Check if Pusher app is active
+   - Ensure `BROADCAST_DRIVER=pusher`
+
+3. **JWT Token Issues**
+   - Run `php artisan jwt:secret`
+   - Clear cache: `php artisan cache:clear`
+
+#### Frontend Issues
+1. **API Connection Error**
+   - Check `VITE_API_URL` in `.env`
+   - Ensure backend server is running
+   - Check CORS configuration
+
+2. **Real-time Notifications Not Working**
+   - Verify Pusher credentials
+   - Check browser console for errors
+   - Ensure Echo is properly configured
+
+3. **Build Errors**
+   - Run `npm install` to ensure all dependencies
+   - Clear node_modules and reinstall if needed
+
+### Development Commands
+
+#### Backend
+```bash
+# Run migrations
+php artisan migrate
+
+# Clear cache
+php artisan cache:clear
+
+# Generate JWT secret
+php artisan jwt:secret
+
+# Run tests
+php artisan test
+
+# Start server
+php artisan serve
+```
+
+#### Frontend
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Run tests
+npm run test
+```
+
+## 📚 Project Structure
+
+```
+TaskManager-Test/
+├── todo-backend/          # Laravel API
+│   ├── app/
+│   │   ├── Http/Controllers/
+│   │   ├── Models/
+│   │   ├── Services/
+│   │   ├── Repositories/
+│   │   └── Events/
+│   ├── database/migrations/
+│   └── routes/
+├── todo-frontend/         # Vue.js Frontend
+│   ├── src/
+│   │   ├── components/
+│   │   ├── views/
+│   │   ├── stores/
+│   │   ├── router/
+│   │   └── lib/
+│   └── package.json
+├── SETUP.md              # Detailed setup guide
+├── PROJECT_SUMMARY.md    # Comprehensive project documentation
+└── README.md            # This file
+```
 
 ## 🤝 Contributing
-1. Fork repo  
-2. Create branch → `git checkout -b feature-name`  
-3. Commit changes → `git commit -m "Add feature"`  
-4. Push branch → `git push origin feature-name`  
-5. Open PR 🚀
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+## 📄 License
+
+This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## 🆘 Support
+
+If you encounter any issues:
+1. Check the troubleshooting section above
+2. Review the console logs for errors
+3. Ensure all environment variables are set correctly
+4. Verify that both backend and frontend servers are running
+
+## 🎯 Educational Value
+
+This project demonstrates:
+- Modern full-stack development
+- Real-time application architecture
+- Professional code organization
+- Security best practices
+- User experience design
+- Testing strategies
+- Deployment considerations
 
 ---
 
-## 📜 License
-MIT License
-=======
-Broadcast issues → Verify Pusher credentials in .env
-
-CORS issues → Update config/cors.php to allow frontend URL
-
-Class not found → Run composer dump-autoload
-
-Frontend
-Import errors → Ensure shadcn-vue components are generated
-
-Alias resolution → Check tsconfig.json & vite.config.ts
-
-Pusher issues → Validate .env credentials & connectivity
-
-Build errors → Delete node_modules & lock file, reinstall dependencies
-
-🚀 How to Use
-Backend
-Register → POST /api/register
-
-Login → POST /api/login → get JWT
-
-Add Authorization: Bearer <token> header for protected endpoints
-
-Manage tasks via CRUD APIs
-
-Frontend
-Visit http://localhost:5173
-
-Register or login
-
-Add, edit, delete tasks with real-time updates
-
-Logout to end session
-
-📡 API Endpoints
-Auth
-POST /api/register → Register new user
-
-POST /api/login → Login (JWT)
-
-POST /api/logout → Logout
-
-POST /api/refresh → Refresh JWT
-
-GET /api/me → Current user info
-
-Tasks
-GET /api/tasks → List tasks
-
-POST /api/tasks → Create task
-
-GET /api/tasks/{id} → Get task
-
-PUT /api/tasks/{id} → Update task
-
-DELETE /api/tasks/{id} → Delete task
-
-Email Verification
-GET /api/email/verify/{id}/{hash} → Verify email
-
-POST /api/email/resend → Resend verification
-
-Events
-TaskCreated, TaskUpdated, TaskDeleted broadcasted via Pusher
-
-📂 Project Structure
-csharp
-Copier le code
-todo-backend/      # Laravel API backend
- ├─ app/           # Models, controllers, policies
- ├─ config/        # Config files
- ├─ database/      # Migrations, seeds
- └─ routes/        # API routes
-
-todo-frontend/     # Vue.js frontend
- ├─ src/           # Components, views, stores, assets
- ├─ public/        # Static files
- └─ vite.config.ts # Vite config
+**Happy Coding! 🚀**

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\NotificationController;
 
 // Email verification routes
 Route::get('email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
@@ -23,6 +24,8 @@ Route::group(['prefix' => 'auth'], function () {
     Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:api');
     Route::post('refresh', [AuthController::class, 'refresh']);
     Route::get('me', [AuthController::class, 'me'])->middleware('auth:api');
+    Route::put('profile', [AuthController::class, 'updateProfile'])->middleware('auth:api');
+    Route::put('password', [AuthController::class, 'changePassword'])->middleware('auth:api');
 });
 
 Route::group(['middleware' => ['auth:api']], function () {
@@ -31,4 +34,10 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('tasks/{id}', [TaskController::class, 'show']);
     Route::put('tasks/{id}', [TaskController::class, 'update']);
     Route::delete('tasks/{id}', [TaskController::class, 'destroy']);
+    
+    // Notification routes
+    Route::get('notifications', [NotificationController::class, 'index']);
+    Route::get('notifications/unread', [NotificationController::class, 'unread']);
+    Route::put('notifications/{id}/read', [NotificationController::class, 'markAsRead']);
+    Route::put('notifications/read-all', [NotificationController::class, 'markAllAsRead']);
 });
